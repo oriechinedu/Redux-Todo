@@ -1,9 +1,18 @@
-import {createStore } from 'redux'
+import {createStore, combineReducers } from 'redux'
+import {reducer as toastrReducer} from 'react-redux-toastr'
+import { composeWithDevTools } from "redux-devtools-extension";
 import reducer from './reducer'
 
+
+const reducers = {
+  todoReducer: reducer,
+  toastr: toastrReducer
+}
+
+const combinedReducers = combineReducers(reducers)
 const store = createStore(
-  reducer,
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
+  combinedReducers,
+  composeWithDevTools()
 );
 
 export default store;

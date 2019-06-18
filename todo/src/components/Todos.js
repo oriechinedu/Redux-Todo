@@ -1,16 +1,17 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import uuid from 'uuid'
+import uuid from "uuid";
 import Todo from "./Todo";
-import { connect } from 'react-redux'
-import { addTodo, toggleTodo, deleteTodo } from '../store/actions/actions'
+import { connect } from "react-redux";
+import { addTodo, toggleTodo, deleteTodo } from "../store/actions/actions";
+import { toastr } from "react-redux-toastr";
 
 const Container = styled.div`
-width: 100%;
-height: 100%;
-display: flex;
-flex-direction: column;
-`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+`;
 
 const Form = styled.form`
   width: 100%;
@@ -36,84 +37,98 @@ const Form = styled.form`
     border: 1px solid aliceblue;
     background: aliceblue;
     cursor: pointer;
-    &:hover{
+    &:hover {
       background: #297373;
       color: aliceblue;
     }
   }
-`
+`;
 const List = styled.ul`
   margin-top: 1rem;
   width: 100%;
-`
+`;
 const H1 = styled.h1`
   font-size: 3.5rem;
-  color: aliceblue; 
+  color: aliceblue;
   text-align: center;
   padding: 1rem 0;
   position: relative;
   &::after {
     position: absolute;
-    content: '';
+    content: "";
     background: aliceblue;
     height: 2px;
     width: 100px;
     bottom: 10px;
     left: 40%;
   }
-`
+`;
 class Todos extends Component {
-  input = React.createRef()
+  input = React.createRef();
 
-  addTodo = (value) => {
+  addTodo = value => {
     if (value) {
       const newTodo = {
         id: uuid(),
         value,
-        completed: false,
-      }
-      this.props.addTodo(newTodo)
-      this.input.current.value = ''
-      this.updateStorage(newTodo)
+        completed: false
+      };
+      this.props.addTodo(newTodo);
+      this.input.current.value = "";
+      this.updateStorage(newTodo);
+      toastr.success("Success", "Todo added successfully");
     }
-  }
-  toggleTodo = (todo) => {
+  };
+  toggleTodo = todo => {
     this.props.toggleTodo({
       id: todo.id,
       todoStatus: !todo.completed
-    })
-  }
-  deleteTodo = (id) => {
-    this.props.deleteTodo(id);
-    this.updateStorage(null, id);
-  }
+    });
+  };
+  deleteTodo = id => {
+    toastr.confirm("Are you sure you want to delete this todo", {
+      onOk: () => {
+        this.props.deleteTodo(id);
+        this.updateStorage(null, id);
+        toastr.success("Success", "Todo deleted successfully");
+      }
+    });
+  };
   updateStorage = (newTodo = null, id = null) => {
-    const currentTodos = JSON.parse(localStorage.getItem('todos')) || []
+    const currentTodos = JSON.parse(localStorage.getItem("todos")) || [];
     if (newTodo) {
       const updatedTodos = currentTodos.concat(newTodo);
-      localStorage.setItem('todos', JSON.stringify(updatedTodos));
+      localStorage.setItem("todos", JSON.stringify(updatedTodos));
     }
 
     if (id) {
       const updatedTodos = currentTodos.filter(todo => todo.id !== id);
-      localStorage.setItem('todos', JSON.stringify(updatedTodos));
+      localStorage.setItem("todos", JSON.stringify(updatedTodos));
     }
-  }
+  };
   render() {
     return (
       <Container>
         <H1>My Todo</H1>
-        <Form onSubmit={(e) => {
-          e.preventDefault();
-          this.addTodo(this.input.current.value)
-        }}>
+        <Form
+          onSubmit={e => {
+            e.preventDefault();
+            this.addTodo(this.input.current.value);
+          }}
+        >
           <input type="text" placeholder="Add todo" ref={this.input} />
-            <button>Submit</button>
+          <button>Submit</button>
         </Form>
         <List>
-          {this.props.todos && this.props.todos.map(todo => (
-            <Todo todo={todo} key={todo.id} toggleTodo={this.toggleTodo} deleteTodo={this.deleteTodo} />
-          ))}
+          {this.props.todos &&
+            this.props.todos.map(todo => (
+              <Todo
+                todo={todo}
+                key={todo.id}
+                toggleTodo={this.toggleTodo}
+                deleteTodo={this.deleteTodo}
+              />
+            ))}
         </List>
       </Container>
     );
@@ -121,7 +136,10 @@ class Todos extends Component {
 }
 const mapStateToProps = state => {
   return {
-    todos: state.todos,
-  }
-}
-export default connect(mapStateToProps, { addTodo, toggleTodo, deleteTodo })(Todos);
+    todos: state.todoReducer.todos
+  };
+};
+export default connect(
+  mapStateToProps,
+  { addTodo, toggleTodo, deleteTodo }
+)(Todos);

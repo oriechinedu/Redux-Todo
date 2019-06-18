@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { FaRegTrashAlt, FaCheckCircle } from 'react-icons/fa'
 
-const Wrapper = styled.li`
+const Container = styled.li`
   padding: 0.8rem;
   width: 100%;
   background: aliceblue;
@@ -23,11 +23,11 @@ const CheckIcon = styled(FaCheckCircle)`
 `
 export default function Todo({todo, toggleTodo, deleteTodo }) {
   return (
-    <Wrapper isCompleted={todo.completed} onClick={() => toggleTodo(todo)}>{ todo.completed && <CheckIcon />} { todo.value} 
+    <Container isCompleted={todo.completed} onClick={() => toggleTodo(todo)}>{ todo.completed && <CheckIcon />} { todo.value} 
     <DeleteIcon onClick={(e) => {
       e.stopPropagation()
       deleteTodo(todo.id)
     }} />
-    </Wrapper>
+    </Container>
   )
 }
