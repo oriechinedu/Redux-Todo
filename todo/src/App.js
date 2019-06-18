@@ -14,6 +14,9 @@ const Container = styled.div`
   -moz-box-shadow: 0px 0px 5px 0px rgba(204, 204, 204, 1);
   box-shadow: 0px 0px 5px 0px rgba(204, 204, 204, 1);
   background: black;
+  @media (max-width: 500px) {
+    width: 100%;
+  }
 `;
 function App() {
   return (

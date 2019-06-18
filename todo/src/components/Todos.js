@@ -46,6 +46,22 @@ const List = styled.ul`
   margin-top: 1rem;
   width: 100%;
 `
+const H1 = styled.h1`
+  font-size: 3.5rem;
+  color: aliceblue; 
+  text-align: center;
+  padding: 1rem 0;
+  position: relative;
+  &::after {
+    position: absolute;
+    content: '';
+    background: aliceblue;
+    height: 2px;
+    width: 100px;
+    bottom: 10px;
+    left: 40%;
+  }
+`
 class Todos extends Component {
   input = React.createRef()
 
@@ -72,6 +88,7 @@ class Todos extends Component {
   render() {
     return (
       <Container>
+        <H1>My Todo</H1>
         <Form onSubmit={(e) => {
           e.preventDefault();
           this.addTodo(this.input.current.value)
