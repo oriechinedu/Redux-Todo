@@ -3,7 +3,7 @@ import styled from "styled-components";
 import uuid from 'uuid'
 import Todo from "./Todo";
 import { connect } from 'react-redux'
-import { addTodo, toggleTodo } from '../store/actions/actions'
+import { addTodo, toggleTodo, deleteTodo } from '../store/actions/actions'
 
 const Container = styled.div`
 width: 100%;
@@ -24,16 +24,21 @@ const Form = styled.form`
     width: 80%;
     padding: 0.8rem;
     border-radius: 6px;
-    border: 1px solid #ccc;
+    border: 1px solid aliceblue;
+    &:focus {
+      border: 2px solid #297373;
+    }
   }
   button {
     width: 19%;
     padding: 0.8rem;
     border-radius: 6px;
-    border: 1px solid #ccc;
+    border: 1px solid aliceblue;
+    background: aliceblue;
     cursor: pointer;
     &:hover{
-      background: aliceblue;
+      background: #297373;
+      color: aliceblue;
     }
   }
 `
@@ -61,6 +66,9 @@ class Todos extends Component {
       todoStatus: !todo.completed
     })
   }
+  deleteTodo = (id) => {
+    this.props.deleteTodo(id);
+  }
   render() {
     return (
       <Container>
@@ -73,7 +81,7 @@ class Todos extends Component {
         </Form>
         <List>
           {this.props.todos && this.props.todos.map(todo => (
-            <Todo todo={todo} key={todo.id} toggleTodo={this.toggleTodo} />
+            <Todo todo={todo} key={todo.id} toggleTodo={this.toggleTodo} deleteTodo={this.deleteTodo} />
           ))}
         </List>
       </Container>
@@ -81,9 +89,8 @@ class Todos extends Component {
   }
 }
 const mapStateToProps = state => {
-  console.log(state.todos)
   return {
     todos: state.todos,
   }
 }
-export default connect(mapStateToProps, { addTodo, toggleTodo })(Todos);
+export default connect(mapStateToProps, { addTodo, toggleTodo, deleteTodo })(Todos);
