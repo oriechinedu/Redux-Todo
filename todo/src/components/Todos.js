@@ -74,6 +74,7 @@ class Todos extends Component {
       }
       this.props.addTodo(newTodo)
       this.input.current.value = ''
+      this.updateStorage(newTodo)
     }
   }
   toggleTodo = (todo) => {
@@ -84,6 +85,19 @@ class Todos extends Component {
   }
   deleteTodo = (id) => {
     this.props.deleteTodo(id);
+    this.updateStorage(null, id);
+  }
+  updateStorage = (newTodo = null, id = null) => {
+    const currentTodos = JSON.parse(localStorage.getItem('todos')) || []
+    if (newTodo) {
+      const updatedTodos = currentTodos.concat(newTodo);
+      localStorage.setItem('todos', JSON.stringify(updatedTodos));
+    }
+
+    if (id) {
+      const updatedTodos = currentTodos.filter(todo => todo.id !== id);
+      localStorage.setItem('todos', JSON.stringify(updatedTodos));
+    }
   }
   render() {
     return (

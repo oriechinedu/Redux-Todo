@@ -1,6 +1,6 @@
 import { ADD_TODO, TOGGLE_TODO, DELETE_TODO } from '../actions/types'
 
-const initialState = { todos: [] }
+const initialState = { todos: JSON.parse(localStorage.getItem('todos')) || [] }
 const reducer = (state = initialState, action) => {
 
   switch (action.type) {
